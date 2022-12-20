@@ -5,9 +5,3 @@ if [ ! -d /.composer ]; then
 fi
 
 chmod -R ugo+rw /.composer
-
-if [ $# -gt 0 ]; then
-    exec gosu $WWWUSER "$@"
-else
-    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
-fi
