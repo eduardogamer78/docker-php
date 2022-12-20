@@ -2,7 +2,13 @@ FROM ubuntu:22.04
 
 LABEL maintainer="Eduardo Gamer"
 
-RUN ln -snf /usr/share/zoneinfo/date.timezone="America/Sao_Paulo" /etc/localtime && echo date.timezone="America/Sao_Paulo"> /etc/timezone
+ARG NODE_VERSION=18
+ARG POSTGRES_VERSION=14
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=America/Sao_Paulo
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
     && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 \
@@ -12,7 +18,6 @@ RUN apt-get update \
     && apt-get install -y php8.1-cli php8.1-dev \
        php8.1-pgsql php8.1-sqlite3 php8.1-gd \
        php8.1-curl \
-       php8.1-gmp \
        php8.1-imap php8.1-mysql php8.1-mbstring \
        php8.1-xml php8.1-zip php8.1-bcmath php8.1-soap \
        php8.1-intl php8.1-readline \
@@ -28,7 +33,7 @@ RUN apt-get update \
     && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /usr/share/keyrings/pgdg.gpg >/dev/null \
     && echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update \
-    && npm -y --global yarn \
+    && apt-get install -y yarn \
     && apt-get install -y mysql-client \
     && apt-get install -y postgresql-client-$POSTGRES_VERSION \
     && apt-get -y autoremove \
