@@ -2,7 +2,6 @@ FROM ubuntu:22.04
 
 LABEL maintainer="Eduardo Gamer"
 
-ARG WWWGROUP
 ARG NODE_VERSION=18
 ARG POSTGRES_VERSION=14
 
@@ -43,6 +42,4 @@ RUN apt-get update \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.1
 
-COPY start-container /usr/local/bin/start-container
-COPY php.ini /etc/php/8.1/cli/conf.d/99-sail.ini
-RUN chmod +x /usr/local/bin/start-container
+CMD [ "php-fpm" ]
