@@ -2,6 +2,12 @@ FROM php:8.1-fpm
 
 ARG IMAGEMAGICK_VERSION=latest
 
+WORKDIR /var/www/html
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
+    apt-utils
+
 # Install system dependencies
 RUN set -eux; \
     apt-get update; \
@@ -80,6 +86,10 @@ RUN if [ ${INSTALL_APCU} = true ]; then \
     docker-php-ext-enable apcu \
 ;fi
 
+RUN docker-php-ext-install iconv 
+RUN docker-php-ext-install fileinfo
+RUN docker-php-ext-install pcntl
+
 # Create system user to run Composer and Artisan Commands
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -92,5 +102,4 @@ RUN mkdir -p /.composer && \
     chmod -R ugo+rw /.composer
 
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

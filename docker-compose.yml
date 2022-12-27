@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: mariadb:10.5.9
+    image: mariadb:latest
     restart: always
     ports:
       - '3306:3306'
@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_DATABASE: 'mydb'
     volumes:
-      - db_data:/var/lib/mysql
+      - ./mariadb/dbdata:/var/lib/mysql
       - ./sql/countries-create.sql:/docker-entrypoint-initdb.d/countries-create.sql:ro
       - ./sql/countries-insert.sql:/docker-entrypoint-initdb.d/countries-insert.sql:ro
     healthcheck:
@@ -39,8 +39,7 @@ services:
       dockerfile: docker/php-fpm/Dockerfile
     volumes:
       - ./conf/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-      - ./projects:/var/www/html
-      - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini'
+      - ./src:/var/www/src
     healthcheck:
       test: php-fpm -t
       interval: 60s
@@ -55,8 +54,7 @@ services:
       - "80:80"
     volumes:
       - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./projects:/var/www/html
-    working_dir: /var/www/html
+      - ./src:/var/www/src
     healthcheck:
       test: curl --fail localhost/ping
       interval: 30s
