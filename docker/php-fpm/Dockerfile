@@ -2,8 +2,6 @@ FROM php:8.1-fpm
 
 ARG IMAGEMAGICK_VERSION=latest
 
-WORKDIR /var/www/html
-
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
     apt-utils
